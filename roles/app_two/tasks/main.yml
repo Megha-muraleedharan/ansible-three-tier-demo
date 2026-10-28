@@ -1,0 +1,18 @@
+
+---
+- name: Create the static website directory
+  ansible.builtin.file:
+    path: /var/www/app2
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Deploy the static website
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/app2/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+

@@ -1,0 +1,36 @@
+
+---
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Configure Nginx for both applications
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/ansible-three-apps
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload Nginx
+
+- name: Enable the application site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/ansible-three-apps
+    dest: /etc/nginx/sites-enabled/ansible-three-apps
+    state: link
+  notify: Reload Nginx
+
+- name: Disable the default Nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx
+
+- name: Ensure Nginx is running and enabled
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+

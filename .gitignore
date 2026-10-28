@@ -1,0 +1,33 @@
+# Secrets and credentials
+secrets.yml
+secrets.yaml
+**/secrets.yml
+**/secrets.yaml
+.env
+.env.*
+!.env.example
+vault-password-file
+.vault_pass
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.p12
+*.pfx
+
+# Local Ansible files
+*.retry
+*.log
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+inventory/hosts.ini
+

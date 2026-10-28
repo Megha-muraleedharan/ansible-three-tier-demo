@@ -1,0 +1,56 @@
+---
+- name: Install Python and Flask
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-flask
+    state: present
+    update_cache: true
+
+- name: Create the application directory
+  ansible.builtin.file:
+    path: /opt/app_one
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy the Flask application
+  ansible.builtin.copy:
+    src: app.py
+    dest: /opt/app_one/app.py
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Flask App
+
+
+- name: Install the Flask systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/app-one.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Ansible Demo Flask Application
+      After=network.target
+
+      [Service]
+      Type=simple
+      User=www-data
+      WorkingDirectory=/opt/app_one
+      ExecStart=/usr/bin/python3 /opt/app_one/app.py
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+      notify: Restart Flask App
+
+- name: Ensure Flask application is running
+  ansible.builtin.systemd:
+    name: app-one
+    daemon_reload: true
+    state: started
+    enabled: true
+# tasks file for roles/app_one
